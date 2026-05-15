@@ -45,7 +45,7 @@ void loop() {
         int ldrValue = ldrGetValue();
 
         // Controle automático por threshold
-        if (ldrValue > thresholdValue) {
+        if (ldrValue < thresholdValue) {
             ledValue = 100;
         } else {
             ledValue = 0;
