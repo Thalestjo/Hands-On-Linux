@@ -17,6 +17,7 @@ int thresholdValue = 50;
 // Controle de envio periódico
 unsigned long lastLdrSend = 0;
 const unsigned long interval = 2000; // 2 segundos
+int initialValue = 0;
 
 void setup() {
     Serial.begin(9600);
@@ -24,7 +25,7 @@ void setup() {
     pinMode(ledPin, OUTPUT);
     pinMode(ldrPin, INPUT);
 
-    ledUpdate();
+    analogWrite(ledPin, initialValue);
 
     Serial.printf("SmartLamp Initialized.\n");
 }
@@ -51,7 +52,7 @@ void loop() {
             ledValue = 0;
         }
 
-        ledUpdate();
+        ledUpdate(ledValue);
 
         Serial.print("RES GET_LDR ");
         Serial.println(ldrValue);
@@ -66,7 +67,9 @@ void processCommand(String command) {
 
         if (value >= 0 && value <= 100) {
             ledValue = value;
-            ledUpdate();
+            Serial.print("[DEBUG] ledValue: ");
+            Serial.println(ledValue);
+            ledUpdate(ledValue);
 
             Serial.println("RES SET_LED 1");
         } else {
@@ -114,7 +117,7 @@ void processCommand(String command) {
 }
 
 // Função para atualizar o valor do LED
-void ledUpdate() {
+int ledUpdate(int ledValue) {
     // Converte de 0-100 para 0-255
     int pwmValue = map(ledValue, 0, 100, 0, 255);
 
@@ -122,6 +125,7 @@ void ledUpdate() {
     pwmValue = constrain(pwmValue, 0, 255);
 
     analogWrite(ledPin, pwmValue);
+    return 0;
 }
 
 // Função para ler o valor do LDR
